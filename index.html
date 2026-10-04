@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Minecraft Stress Tester (Auto Proxy GitHub/ProxyScrape)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #1e1e2e; color: #cdd6f4; display: flex; height: 100vh; overflow: hidden; }
+    
+    .sidebar { width: 430px; background-color: #181825; padding: 20px; overflow-y: auto; border-right: 1px solid #313244; }
+    .sidebar h2 { color: #89b4fa; margin-bottom: 12px; font-size: 1.05rem; border-bottom: 1px solid #313244; padding-bottom: 6px; }
+    
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 0.8rem; color: #a6adc8; margin-bottom: 3px; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%; background-color: #313244; border: 1px solid #45475a; color: #cdd6f4;
+      padding: 6px 8px; border-radius: 4px; font-size: 0.85rem;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: #89b4fa; outline: none; }
+    .form-row { display: flex; gap: 10px; }
+    .form-row .form-group { flex: 1; }
+    
+    .checkbox-group { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .checkbox-group input { width: auto; cursor: pointer; }
+    .checkbox-group label { font-size: 0.8rem; color: #a6adc8; cursor: pointer; }
+
+    .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+    button {
+      flex: 1; padding: 10px; border: none; border-radius: 4px; font-weight: bold;
+      cursor: pointer; transition: background 0.2s; font-size: 0.9rem;
+    }
+    .btn-start { background-color: #a6e3a1; color: #11111b; }
+    .btn-start:hover { background-color: #94e2d5; }
+    .btn-stop { background-color: #f38ba8; color: #11111b; }
+    .btn-stop:hover { background-color: #eba0ac; }
+
+    .main-content { flex: 1; display: flex; flex-direction: column; padding: 20px; }
+    .main-content h2 { color: #89b4fa; margin-bottom: 10px; font-size: 1.05rem; }
+    
+    .log-container {
+      flex: 1; background-color: #11111b; border: 1px solid #313244; border-radius: 6px;
+      padding: 12px; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.83rem;
+      overflow-y: auto; white-space: pre-wrap; line-height: 1.4;
+    }
+    
+    .log-plus { color: #a6e3a1; }
+    .log-info { color: #89b4fa; }
+    .log-warn { color: #f9e2af; }
+    .log-minus { color: #fab387; }
+    .log-err { color: #f38ba8; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>⚙️ Połączenie & Pobieranie Proxy</h2>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="host">IP / Domena:</label>
+        <input type="text" id="host" value="domenaserwera.pl">
+      </div>
+      <div class="form-group" style="flex: 0.5;">
+        <label for="port">Port:</label>
+        <input type="number" id="port" value="25565">
+      </div>
+    </div>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="useSrv" checked>
+      <label for="useSrv">Rozwiązuj DNS SRV (_minecraft._tcp)</label>
+    </div>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="autoScrape" checked>
+      <label for="autoScrape">Auto-pobieranie darmowych SOCKS5 (GitHub & ProxyScrape)</label>
+    </div>
+
+    <div class="form-group">
+      <label for="proxyInputRaw">Dodatkowe własne Proxy (opcjonalnie, host:port):</label>
+      <textarea id="proxyInputRaw" rows="3" placeholder="Wklej tu własne proxy (host:port), jeśli masz dodatkowe"></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="version">Wersja MC:</label>
+        <input type="text" id="version" value="1.21.1">
+      </div>
+      <div class="form-group">
+        <label for="botCount">Liczba botów:</label>
+        <input type="number" id="botCount" value="10">
+      </div>
+    </div>
+
+    <h2>🤖 Timing & Zachowanie</h2>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="spawnDelayMs">Spawn Delay (ms):</label>
+        <input type="number" id="spawnDelayMs" value="3000">
+      </div>
+      <div class="form-group">
+        <label for="reconnectDelayMs">Reconnect (ms):</label>
+        <input type="number" id="reconnectDelayMs" value="10000">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="botPassword">Hasło botów (/register /login):</label>
+      <input type="text" id="botPassword" value="TestPassword123!">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="chatIntervalMs">Czat Co (ms):</label>
+        <input type="number" id="chatIntervalMs" value="15000">
+      </div>
+      <div class="form-group">
+        <label for="actionIntervalMs">Ruch Co (ms):</label>
+        <input type="number" id="actionIntervalMs" value="3000">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="minDelay">Min Pisanie (ms):</label>
+        <input type="number" id="minDelay" value="2500">
+      </div>
+      <div class="form-group">
+        <label for="maxDelay">Max Pisanie (ms):</label>
+        <input type="number" id="maxDelay" value="6000">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="messages">Wiadomości (rozdzielone nową linią):</label>
+      <textarea id="messages" rows="3">Siema wszystkim!
+Co tam słychać na serwerze?
+Fajny ten serwer
+Testowanie wydajności...
+Ma ktoś sprzedać drewno?
+Siemanko :)</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="commands">Komendy (rozdzielone nową linią):</label>
+      <textarea id="commands" rows="2">/help
+/list
+/ping
+/spawn</textarea>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn-start" id="startBtn">START</button>
+      <button class="btn-stop" id="stopBtn">STOP</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h2>📜 Logi w czasie rzeczywistym</h2>
+    <div class="log-container" id="logBox"></div>
+  </div>
+
+  <script>
+    const { ipcRenderer } = require('electron')
+    const logBox = document.getElementById('logBox')
+
+    ipcRenderer.on('log-message', (event, msg) => {
+      const line = document.createElement('div')
+      
+      if (msg.startsWith('[+]')) line.className = 'log-plus'
+      else if (msg.startsWith('[i]')) line.className = 'log-info'
+      else if (msg.startsWith('[!]')) line.className = 'log-warn'
+      else if (msg.startsWith('[-]')) line.className = 'log-minus'
+      else if (msg.startsWith('[X]')) line.className = 'log-err'
+
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`
+      logBox.appendChild(line)
+      logBox.scrollTop = logBox.scrollHeight
+    })
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+      const config = {
+        host: document.getElementById('host').value,
+        port: document.getElementById('port').value,
+        useSrv: document.getElementById('useSrv').checked,
+        autoScrape: document.getElementById('autoScrape').checked,
+        proxyInputRaw: document.getElementById('proxyInputRaw').value,
+        version: document.getElementById('version').value,
+        botCount: document.getElementById('botCount').value,
+        spawnDelayMs: document.getElementById('spawnDelayMs').value,
+        reconnectDelayMs: document.getElementById('reconnectDelayMs').value,
+        botPassword: document.getElementById('botPassword').value,
+        chatIntervalMs: document.getElementById('chatIntervalMs').value,
+        actionIntervalMs: document.getElementById('actionIntervalMs').value,
+        minDelay: parseInt(document.getElementById('minDelay').value, 10),
+        maxDelay: parseInt(document.getElementById('maxDelay').value, 10),
+        messages: document.getElementById('messages').value.split('\n').filter(l => l.trim()),
+        commands: document.getElementById('commands').value.split('\n').filter(l => l.trim())
+      }
+
+      ipcRenderer.send('start-stress-test', config)
+    })
+
+    document.getElementById('stopBtn').addEventListener('click', () => {
+      ipcRenderer.send('stop-stress-test')
+    })
+  </script>
+</body>
+</html>

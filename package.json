@@ -1,0 +1,33 @@
+{
+  "name": "minecraft-stress-tester-autoproxy",
+  "version": "1.0.0",
+  "description": "Minecraft Stress Tester GUI",
+  "main": "botterkagithubproxy.js",
+  "author": "Adisek",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win",
+    "dist:linux": "electron-builder --linux"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "mineflayer": "^4.20.0",
+    "socks": "^2.8.3"
+  },
+  "devDependencies": {
+    "electron": "^30.5.1",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.adisek.mcstresstester",
+    "productName": "MinecraftStressTester",
+    "files": [
+      "**/*",
+      "!dist/**/*"
+    ],
+    "win": {
+      "target": "portable"
+    }
+  }
+}
