@@ -1,5 +1,7 @@
 # 🎮 Minecraft Server Stress Tester GUI (Auto SOCKS5 Scraper & Rotator)
 
+<img width="1536" height="829" alt="image" src="https://github.com/user-attachments/assets/9ccc3688-0fe2-4954-bfef-9dd69e56caaa" />
+
 Zaawansowane narzędzie oparte na **Electron + Node.js + Mineflayer**, przeznaczone do kontrolowanego testowania wydajności i stabilności serwerów Minecraft.
 
 Aplikacja oferuje wygodny interfejs GUI, automatyczne agregowanie publicznych proxy SOCKS5 z wielu źródeł, automatyczną rotację połączeń oraz obsługę DNS SRV.
